@@ -26,21 +26,22 @@ public class PlayerController : MonoBehaviour
     public KeyCode m_DownKeyCode = KeyCode.S;
 
     public KeyCode m_Attach = KeyCode.Mouse0;
-
-    private bool m_OnGround = false;
+    private bool pressed=false;
     public float m_DotToEnterPortal = 0.5f;
 
     private GameObject m_AttachObject = null;
     public Transform m_AttachPosition;
     public float m_AttachObjectTime = 1f;
     private float m_CurrentAttachObjectTime = 0f;
-    private float smooth = 19f;
-    private float smoothRot = 5f;
 
-    private float m_DetachForce = 550f;
+    private float forceImpulse=100f;
+    private bool controlForce = false;
 
-    Vector3 m_Direction;
 
+    //delagates
+
+    public delegate void DelegateForceImpulse(float value);
+    public static DelegateForceImpulse delegateForceImpulse;            
     void Awake()
     {
         m_Yaw = transform.rotation.eulerAngles.y;
@@ -63,15 +64,45 @@ public class PlayerController : MonoBehaviour
 
         if (m_AttachObject != null && Input.GetKeyDown(m_Attach))
             Detach(0f);
-        if (m_AttachObject != null && Input.GetMouseButtonDown(1))
-            Detach(m_DetachForce);
 
+
+        if (m_AttachObject != null && Input.GetMouseButton(1))
+            pressed = true;
+        else if(m_AttachObject != null && Input.GetMouseButtonUp(1))
+        {
+            print("force impulse actual: " + forceImpulse);
+            Detach(forceImpulse);
+            forceImpulse = 0;
+        }
 
         UpdateAttachPosition();
+
+        if (pressed && m_AttachObject != null)
+            DetachWithForce();
     }
 
+
+    private void DetachWithForce()
+    {
+        if (Input.GetMouseButton(1) && !controlForce)
+        {
+            forceImpulse += 10;
+            if (forceImpulse >= 1000)
+                controlForce = !controlForce;
+            delegateForceImpulse?.Invoke(forceImpulse);
+        }
+        else if (Input.GetMouseButton(1) && controlForce)
+        {
+            forceImpulse -= 10;
+            if (forceImpulse <= 0)
+                controlForce = !controlForce;
+
+            delegateForceImpulse?.Invoke(forceImpulse);
+        }
+    }
     private void Detach(float ForceToApply)
     {
+
         if (m_CurrentAttachObjectTime >= m_AttachObjectTime)
         {
             Rigidbody l_Rigid = m_AttachObject.GetComponent<Rigidbody>();
