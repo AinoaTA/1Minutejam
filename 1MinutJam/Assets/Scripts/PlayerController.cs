@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
         m_CharacterController = GetComponent<CharacterController>();
         m_Pitch = m_PitchControllerTransform.localRotation.eulerAngles.x;
 
-        //GameController.GetGameController().SetPlayer(this);
+        GameController.GetGameController().SetPlayer(this);
     }
     private void Start()
     {
@@ -172,7 +172,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit l_RaycastHit;
         if (Physics.Raycast(l_ray, out l_RaycastHit, 20.0f, m_AttachLayer.value))
         {
-            if (l_RaycastHit.collider.CompareTag("Object"))
+            //if (l_RaycastHit.collider.CompareTag("Object"))
                 StartAttachObject(l_RaycastHit.collider.gameObject);
         }
     }

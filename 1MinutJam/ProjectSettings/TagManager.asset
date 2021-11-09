@@ -5,11 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Object
+  - Trash
+  - Clothes
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interactable
   - Water
   - UI
   - 
