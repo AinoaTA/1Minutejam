@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     public KeyCode m_DownKeyCode = KeyCode.S;
 
     public KeyCode m_Attach = KeyCode.Mouse0;
-    private bool pressed=false;
+    private bool pressed = false;
     public float m_DotToEnterPortal = 0.5f;
 
     private GameObject m_AttachObject = null;
@@ -34,21 +34,23 @@ public class PlayerController : MonoBehaviour
     public float m_AttachObjectTime = 1f;
     private float m_CurrentAttachObjectTime = 0f;
 
-    private float forceImpulse=100f;
+    private float forceImpulse = 100f;
     private bool controlForce = false;
 
-
+    public float smooth = 4f;
+    public float speed = 4f;
+    private Vector3 velocity = Vector3.one;
+    //private bool catching = false;
     //delagates
 
     public delegate void DelegateForceImpulse(float value);
-    public static DelegateForceImpulse delegateForceImpulse;            
+    public static DelegateForceImpulse delegateForceImpulse;
+
     void Awake()
     {
         m_Yaw = transform.rotation.eulerAngles.y;
         m_CharacterController = GetComponent<CharacterController>();
         m_Pitch = m_PitchControllerTransform.localRotation.eulerAngles.x;
-
-        GameController.GetGameController().SetPlayer(this);
     }
     private void Start()
     {
@@ -59,16 +61,20 @@ public class PlayerController : MonoBehaviour
         PlayerCamera();
         PlayerMovement();
 
+
+        //print(catching);
+
         if (CanAttach() && Input.GetKeyDown(m_Attach))
             Attach();
 
-        if (m_AttachObject != null && Input.GetKeyDown(m_Attach))
+        else if (!CanAttach() && Input.GetKeyDown(m_Attach))
             Detach(0f);
+
 
 
         if (m_AttachObject != null && Input.GetMouseButton(1))
             pressed = true;
-        else if(m_AttachObject != null && Input.GetMouseButtonUp(1))
+        else if (m_AttachObject != null && Input.GetMouseButtonUp(1))
         {
             print("force impulse actual: " + forceImpulse);
             Detach(forceImpulse);
@@ -103,14 +109,15 @@ public class PlayerController : MonoBehaviour
     private void Detach(float ForceToApply)
     {
 
-        if (m_CurrentAttachObjectTime >= m_AttachObjectTime)
-        {
-            Rigidbody l_Rigid = m_AttachObject.GetComponent<Rigidbody>();
-            l_Rigid.isKinematic = false;
-            l_Rigid.AddForce(m_Camera.transform.forward * ForceToApply);
-            m_AttachObject.transform.SetParent(null);
-            m_AttachObject = null;
-        }
+
+        Rigidbody l_Rigid = m_AttachObject.GetComponent<Rigidbody>();
+        l_Rigid.isKinematic = false;
+        l_Rigid.AddForce(m_Camera.transform.forward * ForceToApply);
+        m_AttachObject.transform.SetParent(null);
+        m_AttachObject = null;
+        //catching = false;
+
+
     }
     private void PlayerCamera()
     {
@@ -152,17 +159,10 @@ public class PlayerController : MonoBehaviour
     void UpdateAttachPosition()
     {
 
-        if (m_AttachObject != null && m_CurrentAttachObjectTime < m_AttachObjectTime)
+        if (m_AttachObject != null)
         {
-            m_CurrentAttachObjectTime += Time.deltaTime;
-            float l_Pct = Mathf.Min(1.0f, m_CurrentAttachObjectTime / m_AttachObjectTime);
-            m_AttachObject.transform.position = Vector3.Lerp(m_AttachObject.transform.position, m_AttachPosition.position, m_CurrentAttachObjectTime / m_AttachObjectTime);
-            m_AttachObject.transform.rotation = Quaternion.Lerp(m_AttachObject.transform.rotation, m_AttachPosition.rotation, m_CurrentAttachObjectTime / m_AttachObjectTime);
-
-            if (l_Pct == 1.0f)
-            {
-                m_AttachObject.transform.SetParent(m_AttachPosition);
-            }
+            m_AttachObject.transform.position = Vector3.SmoothDamp(m_AttachObject.transform.position, m_AttachPosition.position, ref velocity, smooth, speed * Time.deltaTime);
+            m_AttachObject.transform.rotation = Quaternion.Lerp(m_AttachObject.transform.rotation, m_AttachPosition.rotation, smooth);
         }
     }
 
@@ -173,7 +173,8 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(l_ray, out l_RaycastHit, 20.0f, m_AttachLayer.value))
         {
             //if (l_RaycastHit.collider.CompareTag("Object"))
-                StartAttachObject(l_RaycastHit.collider.gameObject);
+            StartAttachObject(l_RaycastHit.collider.gameObject);
+            //catching = true;
         }
     }
     void StartAttachObject(GameObject AttachObject)

@@ -8,7 +8,7 @@ public class GameController : MonoBehaviour
     public List<GameController> CurrentSavedObjectsInteractables; //objetos que vas guardando.
 
     static GameController GC;
-    PlayerController PC;
+    public PlayerController PC;
     //set
     public PlayerController SetPlayer(PlayerController player)
     {
