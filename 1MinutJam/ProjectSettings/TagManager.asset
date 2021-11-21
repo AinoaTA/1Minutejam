@@ -7,6 +7,9 @@ TagManager:
   - Object
   - Trash
   - Clothes
+  - Books
+  - Booker
+  - Comoda
   layers:
   - Default
   - TransparentFX

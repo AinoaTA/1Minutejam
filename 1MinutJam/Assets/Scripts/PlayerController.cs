@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,7 +33,6 @@ public class PlayerController : MonoBehaviour
     private GameObject m_AttachObject = null;
     public Transform m_AttachPosition;
     public float m_AttachObjectTime = 1f;
-    private float m_CurrentAttachObjectTime = 0f;
 
     private float forceImpulse = 100f;
     private bool controlForce = false;
@@ -40,8 +40,12 @@ public class PlayerController : MonoBehaviour
     public float smooth = 4f;
     public float speed = 4f;
     private Vector3 velocity = Vector3.one;
-    //private bool catching = false;
     //delagates
+
+    private float touchingGroundValue = 0.5f;
+    private float m_VerticalSpeed = 0.0f;
+    private float touchingGround = 0.3f; //initial value
+    private bool m_OnGround;
 
     public delegate void DelegateForceImpulse(float value);
     public static DelegateForceImpulse delegateForceImpulse;
@@ -51,6 +55,8 @@ public class PlayerController : MonoBehaviour
         m_Yaw = transform.rotation.eulerAngles.y;
         m_CharacterController = GetComponent<CharacterController>();
         m_Pitch = m_PitchControllerTransform.localRotation.eulerAngles.x;
+
+        GameController.GetGameController().SetPlayer(this);
     }
     private void Start()
     {
@@ -62,30 +68,26 @@ public class PlayerController : MonoBehaviour
         PlayerMovement();
 
 
-        //print(catching);
-
         if (CanAttach() && Input.GetKeyDown(m_Attach))
             Attach();
-
         else if (!CanAttach() && Input.GetKeyDown(m_Attach))
             Detach(0f);
 
-
-
-        if (m_AttachObject != null && Input.GetMouseButton(1))
-            pressed = true;
-        else if (m_AttachObject != null && Input.GetMouseButtonUp(1))
-        {
-            print("force impulse actual: " + forceImpulse);
-            Detach(forceImpulse);
-            forceImpulse = 0;
-        }
+        //if (m_AttachObject != null && Input.GetMouseButton(1))
+        //    pressed = true;
+        //else if (m_AttachObject != null && Input.GetMouseButtonUp(1))
+        //{
+        //    print("force impulse actual: " + forceImpulse);
+        //    Detach(forceImpulse);
+        //    forceImpulse = 0;
+        //}
 
         UpdateAttachPosition();
 
-        if (pressed && m_AttachObject != null)
-            DetachWithForce();
+        //if (pressed && m_AttachObject != null)
+        //    DetachWithForce();
     }
+
 
 
     private void DetachWithForce()
@@ -108,16 +110,14 @@ public class PlayerController : MonoBehaviour
     }
     private void Detach(float ForceToApply)
     {
-
-
         Rigidbody l_Rigid = m_AttachObject.GetComponent<Rigidbody>();
         l_Rigid.isKinematic = false;
         l_Rigid.AddForce(m_Camera.transform.forward * ForceToApply);
         m_AttachObject.transform.SetParent(null);
         m_AttachObject = null;
+
+        GameController.GetGameController().GetAreasLight().OpenHelp();
         //catching = false;
-
-
     }
     private void PlayerCamera()
     {
@@ -150,15 +150,37 @@ public class PlayerController : MonoBehaviour
 
         l_Movement.Normalize();
         l_Movement = l_Movement * Time.deltaTime * m_Speed;
-        l_Movement.y = 0;
 
-        m_CharacterController.Move(l_Movement);
+        l_Movement.y = m_VerticalSpeed * Time.deltaTime;
+        m_VerticalSpeed += Physics.gravity.y * Time.deltaTime;
 
 
+        Gravity(l_Movement);
+       // m_CharacterController.Move(l_Movement);
+    }
+
+    private void Gravity(Vector3 movement)
+    {
+        CollisionFlags l_CollisionFlags = m_CharacterController.Move(movement);
+        if ((l_CollisionFlags & CollisionFlags.Below) != 0)
+        {
+            touchingGround += Time.deltaTime;
+            m_OnGround = true;
+            m_VerticalSpeed = 0.0f;
+        }
+        else
+            m_OnGround = false;
+        if ((l_CollisionFlags & CollisionFlags.Above) != 0 && m_VerticalSpeed > 0.0f)
+            m_VerticalSpeed = 0.0f;
+
+        if (touchingGround > touchingGroundValue && m_OnGround)
+        {
+            //m_VerticalSpeed = m_JumpSpeed;
+            touchingGround = 0f;
+        }
     }
     void UpdateAttachPosition()
     {
-
         if (m_AttachObject != null)
         {
             m_AttachObject.transform.position = Vector3.SmoothDamp(m_AttachObject.transform.position, m_AttachPosition.position, ref velocity, smooth, speed * Time.deltaTime);
@@ -170,11 +192,22 @@ public class PlayerController : MonoBehaviour
     {
         Ray l_ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit l_RaycastHit;
-        if (Physics.Raycast(l_ray, out l_RaycastHit, 20.0f, m_AttachLayer.value))
+        if (Physics.Raycast(l_ray, out l_RaycastHit, 5.0f, m_AttachLayer.value))
         {
             //if (l_RaycastHit.collider.CompareTag("Object"))
-            StartAttachObject(l_RaycastHit.collider.gameObject);
+            if (!l_RaycastHit.collider.GetComponent<InteractableObject>().Placed)
+            {
+                StartAttachObject(l_RaycastHit.collider.gameObject);
+                GameController.GetGameController().GetAreasLight().CloseHelp();
+            }
+               
             //catching = true;
+        }
+        else if (Physics.Raycast(l_ray, out l_RaycastHit, 5.0f))
+        {
+
+            if (l_RaycastHit.collider.CompareTag("Comoda") && !GameController.GetGameController().GetComoda().Opened)
+                l_RaycastHit.collider.GetComponent<ComodaMother>().OpenComoda();
         }
     }
     void StartAttachObject(GameObject AttachObject)
@@ -183,7 +216,6 @@ public class PlayerController : MonoBehaviour
         {
             m_AttachObject = AttachObject;
             m_AttachObject.GetComponent<Rigidbody>().isKinematic = true;
-            m_CurrentAttachObjectTime = 0;
         }
     }
     public bool CanAttach()

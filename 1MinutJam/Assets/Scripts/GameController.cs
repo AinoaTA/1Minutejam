@@ -1,31 +1,79 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class GameController : MonoBehaviour
 {
-    public List<GameObject> AllObjectsInteractables; //objetos sin guardar
-    public List<GameController> CurrentSavedObjectsInteractables; //objetos que vas guardando.
+    public List<InteractableObject> AllObjectsInteractables; //objetos sin guardar
+    public List<InteractableObject> CurrentSavedObjectsInteractables = new List<InteractableObject>(); //objetos que vas guardando.
 
     static GameController GC;
-    public PlayerController PC;
+    PlayerController PC;
+    ForceUI HUD;
+    BookerC Booker;
+    Comoda Comoda;
+    AreasLightController AreasLight;
+
+    private void Awake()
+    {
+        GC = this;
+    }
+    private void Start()
+    {
+        AllObjectsInteractables = FindObjectsOfType<InteractableObject>().ToList();
+    }
     //set
     public PlayerController SetPlayer(PlayerController player)
     {
         return PC = player;
     }
 
-    private void Awake()
+    public ForceUI SetHUD ( ForceUI forceUI)
     {
-        GC = this;
+        return HUD = forceUI;
     }
 
+    public BookerC SetBookerC(BookerC booker)
+    {
+        return Booker = booker;
+    }
+    public Comoda SetComoda(Comoda comoda)
+    {
+        return Comoda = comoda;
+    }
+
+    public AreasLightController SetAreasLight(AreasLightController areasLight)
+    {
+        return AreasLight = areasLight;
+    }
     //Gets
     static public GameController GetGameController() => GC;
     public PlayerController GetPlayer() => PC;
 
+    public ForceUI GetHUD() => HUD;
+
+    public BookerC GetBookerC()=> Booker;
+
+    public Comoda GetComoda() => Comoda;
+
+    public AreasLightController GetAreasLight()=> AreasLight;
     //Functions
 
+    public void AddInteractable(InteractableObject interactableObject)
+    {
+        CurrentSavedObjectsInteractables.Add(interactableObject);
+        HUD.UpdateTextObjects();
 
+        if (CurrentSavedObjectsInteractables.Count >= AllObjectsInteractables.Count)
+        {
+            GetHUD().Winner();
+        }
+    }
 
+    public void RemoveInteractable(InteractableObject interactable)
+    {
+        CurrentSavedObjectsInteractables.Remove(interactable);
+        HUD.UpdateTextObjects();
+    }
 }
