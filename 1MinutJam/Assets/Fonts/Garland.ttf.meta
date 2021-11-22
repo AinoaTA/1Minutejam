@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 8b3a8ca1bae2d3b47b179c46aee98e5e
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Garland
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 58082d91d8de1664a93e51607a2db93a, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

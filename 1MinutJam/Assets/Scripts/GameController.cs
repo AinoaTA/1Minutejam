@@ -47,17 +47,20 @@ public class GameController : MonoBehaviour
     {
         return AreasLight = areasLight;
     }
+
+
     //Gets
     static public GameController GetGameController() => GC;
     public PlayerController GetPlayer() => PC;
 
-    public ForceUI GetHUD() => HUD;
+    public ForceUI GetHud() => HUD;
 
     public BookerC GetBookerC()=> Booker;
 
     public Comoda GetComoda() => Comoda;
 
     public AreasLightController GetAreasLight()=> AreasLight;
+   
     //Functions
 
     public void AddInteractable(InteractableObject interactableObject)
@@ -65,10 +68,14 @@ public class GameController : MonoBehaviour
         CurrentSavedObjectsInteractables.Add(interactableObject);
         HUD.UpdateTextObjects();
 
-        if (CurrentSavedObjectsInteractables.Count >= AllObjectsInteractables.Count)
+        if (ReviseCount())
         {
-            GetHUD().Winner();
+            GetHud().Winner();
         }
+    }
+    public bool ReviseCount()
+    {
+        return CurrentSavedObjectsInteractables.Count >= AllObjectsInteractables.Count;
     }
 
     public void RemoveInteractable(InteractableObject interactable)

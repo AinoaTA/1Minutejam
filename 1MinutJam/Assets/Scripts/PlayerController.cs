@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask m_AttachLayer;
 
     public Camera m_Camera;
-    private CharacterController m_CharacterController;
+   public CharacterController m_CharacterController;
 
     public float m_Speed = 10.0f;
     public KeyCode m_LeftKeyCode = KeyCode.A;
@@ -27,7 +27,6 @@ public class PlayerController : MonoBehaviour
     public KeyCode m_DownKeyCode = KeyCode.S;
 
     public KeyCode m_Attach = KeyCode.Mouse0;
-    private bool pressed = false;
     public float m_DotToEnterPortal = 0.5f;
 
     private GameObject m_AttachObject = null;
@@ -192,14 +191,14 @@ public class PlayerController : MonoBehaviour
     {
         Ray l_ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit l_RaycastHit;
-        if (Physics.Raycast(l_ray, out l_RaycastHit, 5.0f, m_AttachLayer.value))
+        if (Physics.Raycast(l_ray, out l_RaycastHit, 4.5f, m_AttachLayer.value))
         {
             //if (l_RaycastHit.collider.CompareTag("Object"))
-            if (!l_RaycastHit.collider.GetComponent<InteractableObject>().Placed)
-            {
+            //if (!l_RaycastHit.collider.GetComponent<InteractableObject>().Placed)
+            //{
                 StartAttachObject(l_RaycastHit.collider.gameObject);
                 GameController.GetGameController().GetAreasLight().CloseHelp();
-            }
+            
                
             //catching = true;
         }
@@ -214,6 +213,7 @@ public class PlayerController : MonoBehaviour
     {
         if (m_AttachObject == null)
         {
+            AttachObject.GetComponent<InteractableObject>().StartSound();
             m_AttachObject = AttachObject;
             m_AttachObject.GetComponent<Rigidbody>().isKinematic = true;
         }

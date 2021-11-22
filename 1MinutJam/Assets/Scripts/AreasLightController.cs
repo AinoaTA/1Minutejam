@@ -11,27 +11,28 @@ public class AreasLightController : MonoBehaviour
     }
     private void Update()
     {
-        
+
     }
 
     public void OpenHelp()
     {
-       
-            for (int i = 0; i < GameController.GetGameController().AllObjectsInteractables.Count; i++)
-            {
+
+        for (int i = 0; i < GameController.GetGameController().AllObjectsInteractables.Count; i++)
+        {
+            if (!GameController.GetGameController().AllObjectsInteractables[i].Placed)
                 GameController.GetGameController().AllObjectsInteractables[i].HelpLight.gameObject.SetActive(true);
-            }
-        
+        }
+
     }
 
     public void CloseHelp()
     {
-        
-            for (int i = 0; i < GameController.GetGameController().AllObjectsInteractables.Count; i++)
-            {
-                GameController.GetGameController().AllObjectsInteractables[i].HelpLight.gameObject.SetActive(false);
-                
-            }
-        
+
+        for (int i = 0; i < GameController.GetGameController().AllObjectsInteractables.Count; i++)
+        {
+            GameController.GetGameController().AllObjectsInteractables[i].HelpLight.gameObject.SetActive(false);
+
+        }
+
     }
 }

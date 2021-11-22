@@ -1,16 +1,16 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ForceUI : MonoBehaviour
 {
     public TMP_Text UI;
     public TMP_Text Objects;
-    public TMP_Text TimerText;
-    public float timer;
     public Camera MainCamera;
 
     public GameObject WinScreen;
+    public GameObject LooseScreen;
 
     private void OnEnable()
     {
@@ -33,12 +33,18 @@ public class ForceUI : MonoBehaviour
     }
     private void Update()
     {
-        Timer();
+        //Timer();
         UpdateLooking();
     }
     public void Winner()
     {
         WinScreen.SetActive(true);
+        StartCoroutine(DelayTime());
+    }
+
+    public void Loose()
+    {
+        LooseScreen.SetActive(true);
         StartCoroutine(DelayTime());
     }
 
@@ -50,12 +56,6 @@ public class ForceUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
     //texts
-
-    public void Timer()
-    {
-        timer += Time.deltaTime;
-        TimerText.text = timer.ToString();
-    }
     private void UpdateText(float value)
     {
         //ForceText.text = value.ToString();
@@ -69,7 +69,7 @@ public class ForceUI : MonoBehaviour
     private void UpdateLooking()
     {
         RaycastHit hit;
-        if (Physics.Raycast(MainCamera.transform.position, MainCamera.transform.forward, out hit, 5f))
+        if (Physics.Raycast(MainCamera.transform.position, MainCamera.transform.forward, out hit, 4.5f))
         {
             if (!hit.collider.CompareTag("Untagged") && GameController.GetGameController().GetPlayer().CanAttach())
             {
@@ -79,10 +79,10 @@ public class ForceUI : MonoBehaviour
                     {
                         UI.text = "";
                     }else
-                        UI.text = "RMB";
+                        UI.text = "LMB";
                 }
                 else
-                    UI.text = "RMB";
+                    UI.text = "LMB";
 
             }
             else if (hit.collider.CompareTag("Untagged"))
@@ -93,4 +93,14 @@ public class ForceUI : MonoBehaviour
             UI.text = "";
         
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    //public void ResetScene()
+    //{
+    //    SceneManager.LoadSceneAsync(0);
+    //}
 }

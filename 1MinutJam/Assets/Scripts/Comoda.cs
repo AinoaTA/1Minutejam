@@ -29,7 +29,10 @@ public class Comoda : MonoBehaviour
     private void Update()
     {
         UpdateCanvas();
+
+
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Clothes") && GameController.GetGameController().GetPlayer().CanAttach())
@@ -38,6 +41,7 @@ public class Comoda : MonoBehaviour
             GameController.GetGameController().AddInteractable(Object);
             currentCounter++;
             UpdateCanvas();
+            Object.transform.SetParent(gameObject.transform);
             Object.Placed = true;
         }
     }
