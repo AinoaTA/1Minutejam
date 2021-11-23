@@ -29,6 +29,17 @@ public class TrashContaines : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<InteractableObject>().Placed)
+        {
+            GameController.GetGameController().RemoveInteractable(other.gameObject.GetComponent<InteractableObject>());
+            currentCounter--;
+            UpdateCanvas();
+            other.GetComponent<InteractableObject>().Placed = false;
+        }
+    }
+
     private void UpdateCanvas()
     {
         text.text = currentCounter + "/" + counter;

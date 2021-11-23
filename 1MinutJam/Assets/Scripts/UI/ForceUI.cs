@@ -12,6 +12,8 @@ public class ForceUI : MonoBehaviour
     public GameObject WinScreen;
     public GameObject LooseScreen;
 
+    public Animator BlackScreen;
+
     private void OnEnable()
     {
 
@@ -63,7 +65,7 @@ public class ForceUI : MonoBehaviour
 
     public void UpdateTextObjects()
     {
-        Objects.text = GameController.GetGameController().CurrentSavedObjectsInteractables.Count.ToString()+ "/" + GameController.GetGameController().AllObjectsInteractables.Count.ToString();
+        Objects.text = GameController.GetGameController().CurrentSavedObjectsInteractables.Count.ToString() + "/" + GameController.GetGameController().AllObjectsInteractables.Count.ToString();
     }
 
     private void UpdateLooking()
@@ -78,7 +80,8 @@ public class ForceUI : MonoBehaviour
                     if (GameController.GetGameController().GetComoda().Opened)
                     {
                         UI.text = "";
-                    }else
+                    }
+                    else
                         UI.text = "LMB";
                 }
                 else
@@ -87,11 +90,11 @@ public class ForceUI : MonoBehaviour
             }
             else if (hit.collider.CompareTag("Untagged"))
                 UI.text = "";
-            
+
         }
         else
             UI.text = "";
-        
+
     }
 
     public void QuitGame()
@@ -103,4 +106,19 @@ public class ForceUI : MonoBehaviour
     //{
     //    SceneManager.LoadSceneAsync(0);
     //}
+
+    public void Retry()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene(1);
+    }
+
+    public void BackMenu()
+    {
+        Time.timeScale = 1;
+
+        SceneManager.LoadScene(0);
+
+    }
+
 }

@@ -29,7 +29,7 @@ public class TextController : MonoBehaviour
     }
     private void Update()
     {
-        print(currentTimer);
+      //  print(currentTimer);
         if (timer)
         {
             currentTimer += Time.deltaTime;
