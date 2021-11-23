@@ -13,7 +13,7 @@ public class ForceUI : MonoBehaviour
     public GameObject LooseScreen;
 
     public Animator BlackScreen;
-
+    public GameObject quitLose, quitWin;
     private void OnEnable()
     {
 
@@ -31,6 +31,10 @@ public class ForceUI : MonoBehaviour
     }
     private void Start()
     {
+#if UNITY_WEBGL
+        quitWin.SetActive(false);
+        quitLose.SetActive(false);
+#endif
         UpdateTextObjects();
     }
     private void Update()
@@ -101,11 +105,6 @@ public class ForceUI : MonoBehaviour
     {
         Application.Quit();
     }
-
-    //public void ResetScene()
-    //{
-    //    SceneManager.LoadSceneAsync(0);
-    //}
 
     public void Retry()
     {
