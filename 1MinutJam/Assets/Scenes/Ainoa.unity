@@ -4626,7 +4626,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PitchControllerTransform: {fileID: 1887123215}
-  m_YawRotationalSpeed: 225
+  m_YawRotationalSpeed: 180
   m_PitchRotationalSpeed: -100
   m_MinPitch: -80
   m_MaxPitch: 80
@@ -16778,7 +16778,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 2350226919559647379, guid: a0f81708e4a3f8f4fa24e8ff745aa51a, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 637f7a3d2344dff4fa54c2f814fcf112, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 3c57b52817cca7e41ad7ea40ed66abca, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1
