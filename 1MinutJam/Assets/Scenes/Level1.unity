@@ -4350,8 +4350,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PitchControllerTransform: {fileID: 1887123215}
-  m_YawRotationalSpeed: 180
-  m_PitchRotationalSpeed: -100
+  m_YawRotationalSpeed: 240
+  m_PitchRotationalSpeed: -200
   m_AttachLayer:
     serializedVersion: 2
     m_Bits: 8
