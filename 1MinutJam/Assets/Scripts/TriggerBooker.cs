@@ -8,8 +8,8 @@ public class TriggerBooker : MonoBehaviour
         {
             InteractableObject Object = other.gameObject.GetComponent<InteractableObject>();
             GameController.GetGameController().AddInteractable(Object);
-            GameController.GetGameController().GetBookerC().currentCounter++;
-            GameController.GetGameController().GetBookerC().UpdateCanvas();
+            GameController.GetGameController().GetBookerCounter().currentCounter++;
+            GameController.GetGameController().GetBookerCounter().UpdateCanvas();
             Object.Placed = true;
         }
     }
@@ -19,8 +19,8 @@ public class TriggerBooker : MonoBehaviour
         {
             InteractableObject Object = other.gameObject.GetComponent<InteractableObject>();
             GameController.GetGameController().RemoveInteractable(Object);
-            GameController.GetGameController().GetBookerC().currentCounter--;
-            GameController.GetGameController().GetBookerC().UpdateCanvas();
+            GameController.GetGameController().GetBookerCounter().currentCounter--;
+            GameController.GetGameController().GetBookerCounter().UpdateCanvas();
             Object.Placed = false;      
         }
     }

@@ -10,8 +10,8 @@ public class GameController : MonoBehaviour
 
     static GameController GC;
     PlayerController PC;
-    ForceUI HUD;
-    BookerC Booker;
+    UIController HUD;
+    BookerCounter Booker;
     Comoda Comoda;
     AreasLightController AreasLight;
 
@@ -23,18 +23,19 @@ public class GameController : MonoBehaviour
     {
         AllObjectsInteractables = FindObjectsOfType<InteractableObject>().ToList();
     }
-    //set
+
+    //SETS
     public PlayerController SetPlayer(PlayerController player)
     {
         return PC = player;
     }
 
-    public ForceUI SetHUD ( ForceUI forceUI)
+    public UIController SetHUD ( UIController forceUI)
     {
         return HUD = forceUI;
     }
 
-    public BookerC SetBookerC(BookerC booker)
+    public BookerCounter SetBookerC(BookerCounter booker)
     {
         return Booker = booker;
     }
@@ -42,20 +43,20 @@ public class GameController : MonoBehaviour
     {
         return Comoda = comoda;
     }
-
+   
     public AreasLightController SetAreasLight(AreasLightController areasLight)
     {
         return AreasLight = areasLight;
     }
 
-
-    //Gets
+    //--
+    //GETS
     static public GameController GetGameController() => GC;
     public PlayerController GetPlayer() => PC;
 
-    public ForceUI GetHud() => HUD;
+    public UIController GetHud() => HUD;
 
-    public BookerC GetBookerC()=> Booker;
+    public BookerCounter GetBookerCounter()=> Booker;
 
     public Comoda GetComoda() => Comoda;
 
@@ -69,9 +70,7 @@ public class GameController : MonoBehaviour
         HUD.UpdateTextObjects();
 
         if (ReviseCount())
-        {
             GetHud().Winner();
-        }
     }
     public bool ReviseCount()
     {
