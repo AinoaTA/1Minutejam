@@ -32,4 +32,6 @@ public class AudioController : MonoBehaviour
         sfxLabel.text = (sfxSlider.value + 80).ToString();
         TheMixer.SetFloat("SFXValue", (sfxSlider.value));
     }
+
+
 }
